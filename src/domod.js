@@ -33,6 +33,11 @@
 		for(var i = 0; i < arguments.length; i++) {
 			// Keep element and document nodes (1 & 9)
 			if(arguments[i] !== null && arguments[i] !== undefined && arguments[i].nodeType%8 === 1) {
+				for(var j = i+1; j < arguments.length; j++) {
+					if (arguments[i] === arguments[j]) {
+						j	= ++i;
+					}
+				}
 				items.push(arguments[i]);
 			}
 		}
