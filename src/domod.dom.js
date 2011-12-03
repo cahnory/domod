@@ -92,6 +92,21 @@
 	};
 	
 	/* !Sibling */
+	$.fn.eq = function(n) {
+		return	$(this.item(n));
+	};
+	$.fn.gt = function(n) {
+		return	$.apply(this, this.items().slice(n+1));
+	};
+	$.fn.gte = function(n) {
+		return	$.apply(this, this.items().slice(n));
+	};
+	$.fn.lt = function(n) {
+		return	$.apply(this, this.items().slice(0, n));
+	};
+	$.fn.lte = function(n) {
+		return	$.apply(this, this.items().slice(0, n+1));
+	};
 	$.fn.first = function() {
 		return	$(this.item(0));
 	};
@@ -128,6 +143,18 @@
 		var nodes	= [];
 		this.each(function() {
 			nodes.push(this.parentNode);
+		});
+		return	$.apply(this, nodes);
+	};
+	$.fn.parents = function() {
+		var nodes	= [];
+		this.each(function() {
+			var parents	= [],
+				parent	= this;
+			while(parent = parent.parentNode) {
+				parents.push(parent);
+			}
+			nodes	= nodes.concat(parents);
 		});
 		return	$.apply(this, nodes);
 	};
