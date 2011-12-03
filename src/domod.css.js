@@ -1,24 +1,27 @@
 (function($) {
-	var camelCase = function(n) {
-		return	n.replace(/\-([a-z])/g, function($1, $2){return $2.toUpperCase();});
-	}
+	var	dash = function(n) {
+		return	n.replace(/[A-Z]/g, function($1){return '-'+$1.toLowerCase();});
+	};
+	
 	$.fn.css = function(p, v) {
 		var	op = {};
 		
 		if(typeof p === 'string' && typeof v === 'undefined') {
 			return	this.each(function() {
-				return	this.style[camelCase(p)];
+				return	this.style[dash(p)];
 			});
 		} else if(typeof p !== 'object') {
-			op[camelCase(p)] = v;
+			op[dash(p)] = v;
 		} else {
 			for(i in p) {
-				op[camelCase(i)] = p[i];
+				op[dash(i)] = p[i];
 			}
 		}
 		return	this.each(function() {
 			for(var i in op) {
-				this.style[i] = op[i];
+				if('style' in this) {
+					this.style.setProperty(i, op[i]);
+				}
 			}
 		});
 	};
