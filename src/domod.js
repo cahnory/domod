@@ -4,7 +4,8 @@
  *
  **/
 (function(window) {
-	var domod = function(items) {
+	var	guid  = 1,
+		domod = function(items) {
 			this.length	= items.length;
 			this.each	= function(func) {
 				var	res;
@@ -23,8 +24,16 @@
 			}
 			return	this;
 		},
-		init = function() {
-			return	new domod(init.targeter.apply(window, arguments));
+		init = function(args) {
+			var items	 = [];
+			this.addItem = function(item) {
+				if(!('guid' in item)) {
+					item.guid = 'domod'+guid++;
+				}
+				items.push(item);
+			}
+			init.targeter.apply(this, arguments);
+			return	new domod(items);
 		};
 	
 	// Returns an array of dom element
@@ -38,10 +47,9 @@
 						j	= ++i;
 					}
 				}
-				items.push(arguments[i]);
+				this.addItem(arguments[i]);
 			}
 		}
-		return	items;
 	}
 	
 	// Add new methods
