@@ -1,9 +1,11 @@
 (function($) {
 	$.targeter = function(selector) {
 		if(typeof selector === 'string') {
-			return	Sizzle(selector);
+			var items = Sizzle(selector);
+			for(i in items) {
+				this.addItem(items[i]);
+			}
 		} else {
-			var	items	= [];
 			for(var i = 0; i < arguments.length; i++) {
 				// Keep element and document nodes (1 & 9)
 				if(arguments[i] !== null && arguments[i] !== undefined && arguments[i].nodeType%8 === 1) {
@@ -12,10 +14,9 @@
 							j	= ++i;
 						}
 					}
-					items.push(arguments[i]);
+					this.addItem(arguments[i]);
 				}
 			}
-			return	items;
 		}
 	}
 	
