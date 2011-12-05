@@ -18,8 +18,8 @@
 			}
 		}
 		return	this.each(function() {
-			for(var i in op) {
-				if('style' in this) {
+			if('style' in this) {
+				for(var i in op) {
 					this.style.setProperty(i, op[i]);
 				}
 			}
