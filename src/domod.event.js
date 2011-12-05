@@ -9,12 +9,22 @@
 				
 			// Internet Explorer
 			} else {
-				return function(node, event, listener) {
-					var fpNotify = function() {
+				var	attachIeEventListener = function(node, event, listener) {
+					var finalListener = function() {
 						listener.apply(node, arguments);
+					};
+					node.attachEvent('on' + event, finalListener);
+					return	finalListener;
+				}
+				return function(node, event, listener) {
+					var finalListener = attachIeEventListener(node, event, listener);
+					
+					// Re-order events
+					for(var i = eventRegister[node.guid][event].length - 1; i >= 0; i--) {
+						removeEventListener(node, event, eventRegister[node.guid][event][i].finalListener);
+						eventRegister[node.guid][event][i].finalListener	= attachIeEventListener(node, event, eventRegister[node.guid][event][i].listener);
 					}
-					node.attachEvent('on' + event, fpNotify);
-					return	fpNotify;
+					return	finalListener;
 				}
 			}
 		})(),
@@ -45,11 +55,11 @@
 				if(!(type in eventRegister[this.guid])) {
 					eventRegister[this.guid][type]	= [];
 				}
-				console.log(type, space);
 				eventRegister[this.guid][type].push({
 					type:			type,
 					space:			space,
-					listener:		addEventListener(this, type, listener)
+					listener:		listener,
+					finalListener:	addEventListener(this, type, listener)
 				});
 			});
 		}
@@ -65,9 +75,9 @@
 				if(this.guid in eventRegister) {
 					if(type in eventRegister[this.guid]) {
 						for(j in eventRegister[this.guid][type]) {
-								console.log(type, space);
-							if(!space || eventRegister[this.guid][type][j].space === space) {
-								removeEventListener(this, type, eventRegister[this.guid][type][j].listener);
+							if((!space || eventRegister[this.guid][type][j].space === space)
+							&& (typeof listener === 'undefined' || listener === eventRegister[this.guid][type][j].listener)) {
+								removeEventListener(this, type, eventRegister[this.guid][type][j].finalListener);
 							}
 						}
 					}
